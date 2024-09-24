@@ -1,19 +1,18 @@
-import VerticalLayout from './VerticalLayout.js'
-import ErrorPage from "./ErrorPage.js"
-import LoadingPage from "./LoadingPage.js"
-import BigBilledIcon from '../assets/svg/big_billed.js'
-import { filteredBills } from '../containers/Dashboard.js'
-import ArrowIcon from '../assets/svg/arrow.js'
+import VerticalLayout from "./VerticalLayout.js";
+import ErrorPage from "./ErrorPage.js";
+import LoadingPage from "./LoadingPage.js";
+import BigBilledIcon from "../assets/svg/big_billed.js";
+import { filteredBills } from "../containers/Dashboard.js";
+import ArrowIcon from "../assets/svg/arrow.js";
 
 export default ({ data, loading, error }) => {
+	if (loading) {
+		return LoadingPage();
+	} else if (error) {
+		return ErrorPage(error);
+	}
 
-  if (loading) {
-    return LoadingPage()
-  } else if (error) {
-    return ErrorPage(error)
-  }
-
-  return (`
+	return `
     <div class='layout'>
       ${VerticalLayout(120)}
       <div class='dashboard-content'>
@@ -44,6 +43,5 @@ export default ({ data, loading, error }) => {
           <h3> Validations </h3>
           <div><div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div></div>
       </div>
-    </div>`
-  )
-}
+    </div>`;
+};
