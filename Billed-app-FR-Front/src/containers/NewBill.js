@@ -17,7 +17,20 @@ export default class NewBill {
 	}
 	handleChangeFile = (e) => {
 		e.preventDefault();
-		const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
+		const fileInput = this.document.querySelector(`input[data-testid="file"]`);
+		const file = fileInput.files[0];
+
+		// Validate file type
+		const validExtensions = ["jpg", "jpeg", "png"];
+		const fileFullName = file.name.toLowerCase();
+		const fileExtension = fileFullName.split(".").pop();
+
+		if (!validExtensions.includes(fileExtension)) {
+			alert("Format de fichier non valide");
+			fileInput.value = ""; // clear input if file is not valid to force user to upload another
+			return;
+		}
+
 		const filePath = e.target.value.split(/\\/g);
 		const fileName = filePath[filePath.length - 1];
 		const formData = new FormData();
