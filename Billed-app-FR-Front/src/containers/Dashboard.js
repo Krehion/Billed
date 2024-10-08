@@ -86,6 +86,7 @@ export default class {
 	handleEditTicket(e, bill, bills) {
 		if (this.counter === undefined || this.id !== bill.id) this.counter = 0;
 		if (this.id === undefined || this.id !== bill.id) this.id = bill.id;
+		// If counter is even, display the form
 		if (this.counter % 2 === 0) {
 			bills.forEach((b) => {
 				$(`#open-bill${b.id}`).css({ background: "#0D5AE5" });
@@ -93,7 +94,9 @@ export default class {
 			$(`#open-bill${bill.id}`).css({ background: "#2A2B35" });
 			$(".dashboard-right-container div").html(DashboardFormUI(bill));
 			$(".vertical-navbar").css({ height: "150vh" });
-		} else {
+		}
+		// If counter is odd, display the big bill icon
+		else {
 			$(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
 			$(".dashboard-right-container div").html(`
@@ -101,6 +104,7 @@ export default class {
       `);
 			$(".vertical-navbar").css({ height: "120vh" });
 		}
+		this.counter++; // Increment the counter
 		$("#icon-eye-d").click(this.handleClickIconEye);
 		$("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
 		$("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
