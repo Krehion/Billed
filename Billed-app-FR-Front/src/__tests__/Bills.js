@@ -12,6 +12,7 @@ import Bills from "../containers/Bills.js";
 
 import router from "../app/Router.js";
 
+// Test the UI
 describe("Given I am connected as an employee", () => {
 	describe("When I am on Bills Page", () => {
 		test("Then bill icon in vertical layout should be highlighted", async () => {
@@ -96,11 +97,69 @@ describe("Given I am connected as an employee", () => {
 	});
 });
 
-// test d'intégration GET
-// describe("Given I am connected as an employee", () => {
-// 	describe("When I am on Bills Page", () => {
-// 		test("bills should be fetched from the mock API GET", () => {
-// 			// test content
-// 		});
-// 	});
-// });
+// Test the getBills function
+describe("Given I am connected as an employee", () => {
+	let billsInstance;
+	beforeEach(() => {
+		// Set up the environment
+		document.body.innerHTML = BillsUI({ data: bills });
+		const onNavigate = jest.fn();
+		billsInstance = new Bills({
+			document,
+			onNavigate,
+			store: {
+				bills: jest.fn(() => ({
+					list: jest.fn(() =>
+						Promise.resolve([
+							{ id: 1, date: "2022-01-01", status: "pending" },
+							{ id: 2, date: "2021-01-01", status: "accepted" }
+						])
+					)
+				}))
+			},
+			localStorage: window.localStorage
+		});
+	});
+
+	describe("When I call getBills", () => {
+		test("Then it should return a sorted list of bills by date in descending order", async () => {
+			const sortedBills = await billsInstance.getBills();
+			expect(sortedBills.length).toBe(2);
+			expect(sortedBills[0].date).toBe("1 Jan. 22");
+			expect(sortedBills[1].date).toBe("1 Jan. 21");
+		});
+
+		describe("When formatDate fails", () => {
+			test("Then it should catch an error, log it, and return the original date", async () => {
+				// The store returns a bill with an invalid date
+				billsInstance.store.bills = jest.fn(() => ({
+					list: jest.fn(() => Promise.resolve([{ id: 1, date: "invalid-date", status: "pending" }]))
+				}));
+
+				// When I call getBills
+				const consoleSpy = jest.spyOn(console, "log");
+				const billsList = await billsInstance.getBills();
+
+				// The error should be logged
+				expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error), "for", {
+					id: 1,
+					date: "invalid-date",
+					status: "pending"
+				});
+				// The bill should have the original date
+				expect(billsList[0].date).toBe("invalid-date");
+				consoleSpy.mockRestore();
+			});
+		});
+
+		describe("When the store is null", () => {
+			test("Then it should return undefined", async () => {
+				billsInstance.store = null;
+
+				const result = await billsInstance.getBills();
+
+				expect(result).toBeUndefined();
+			});
+		});
+	});
+});
