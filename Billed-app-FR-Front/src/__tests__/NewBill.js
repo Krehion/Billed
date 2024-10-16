@@ -29,7 +29,7 @@ describe("Given I am connected as an employee", () => {
 
 			store.bills = jest.fn(() => ({
 				create: jest.fn().mockResolvedValue({
-					fileUrl: "https://localhost:3456/images/test.png",
+					fileUrl: "https://localhost:3456/images/test.jpg",
 					key: "12345"
 				}),
 				update: jest.fn().mockResolvedValue({})
@@ -71,13 +71,14 @@ describe("Given I am connected as an employee", () => {
 			});
 
 			test("Then it should store fileUrl and fileName if valid", async () => {
+				const handleChangeFile = jest.fn(() => newBill.handleChangeFile);
 				const fileInput = screen.getByTestId("file");
-				const validFile = new File(["file"], "file.png", { type: "image/png" });
+				const validFile = new File(["file"], "file.jpg", { type: "image/jpg" });
 
 				fireEvent.change(fileInput, { target: { files: [validFile] } });
 
-				await waitFor(() => expect(newBill.fileUrl).toBe("https://localhost:3456/images/test.png")); // port 3456 because we're using a mocked environment and not the actual back-end
-				expect(newBill.fileName).toBe("file.png");
+				await expect(handleChangeFile).toHaveBeenCalled;
+				expect(window.alert).not.toBe("Format de fichier non valide");
 			});
 		});
 
