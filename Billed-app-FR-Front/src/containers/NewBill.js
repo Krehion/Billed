@@ -47,7 +47,7 @@ export default class NewBill {
 				}
 			})
 			.then(({ fileUrl, key }) => {
-				console.log(fileUrl);
+				console.log("File uploaded:", fileUrl, key);
 				this.billId = key;
 				this.fileUrl = fileUrl;
 				this.fileName = fileName;
