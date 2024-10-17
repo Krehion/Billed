@@ -168,7 +168,7 @@ describe("Given I am connected as an employee", () => {
 
 // test d'intégration GET
 describe("Given I am a user connected as an employee", () => {
-	describe("WWhen I am on Bills page", () => {
+	describe("When I am on Bills page", () => {
 		test("Then fetches bills from mock API GET", async () => {
 			Object.defineProperty(window, "localStorage", { value: localStorageMock });
 			window.localStorage.setItem(
