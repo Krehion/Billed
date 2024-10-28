@@ -142,7 +142,9 @@ export default class {
 		}
 
 		bills.forEach((bill) => {
-			$(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
+			$(`#open-bill${bill.id}`)
+				.off("click") // remove previously attached click event handlers : make sure it's not accumulating and causing errors
+				.click((e) => this.handleEditTicket(e, bill, bills));
 		});
 
 		return bills;
